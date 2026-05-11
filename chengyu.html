@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>每日成語</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Serif TC', serif;
+    background: linear-gradient(135deg, #fff9f0 0%, #fff3e0 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+
+  .card {
+    background: #fffdf9;
+    border: 1.5px solid #f0d9b5;
+    border-radius: 16px;
+    padding: 28px 32px;
+    max-width: 460px;
+    width: 100%;
+    box-shadow: 0 4px 24px rgba(180,130,60,0.08);
+  }
+
+  .label {
+    font-size: 12px;
+    color: #c49a4a;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .label::before {
+    content: '';
+    display: inline-block;
+    width: 18px;
+    height: 2px;
+    background: #c49a4a;
+  }
+
+  .word {
+    font-size: 42px;
+    font-weight: 700;
+    color: #8b1a1a;
+    letter-spacing: 10px;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .pinyin {
+    text-align: center;
+    font-size: 13px;
+    color: #b89060;
+    letter-spacing: 3px;
+    margin-bottom: 24px;
+    font-style: italic;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px dashed #e8cfa0;
+    margin: 0 0 20px;
+  }
+
+  .section-label {
+    font-size: 11px;
+    color: #c49a4a;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+
+  .meaning {
+    font-size: 15px;
+    color: #4a3728;
+    line-height: 1.8;
+    margin-bottom: 18px;
+  }
+
+  .example {
+    font-size: 14px;
+    color: #6b5040;
+    line-height: 1.8;
+    background: #fff8ee;
+    border-left: 3px solid #c49a4a;
+    padding: 10px 14px;
+    border-radius: 0 8px 8px 0;
+  }
+
+  .example em {
+    color: #8b1a1a;
+    font-style: normal;
+    font-weight: 700;
+  }
+
+  .date {
+    margin-top: 20px;
+    font-size: 11px;
+    color: #c4a870;
+    text-align: right;
+    letter-spacing: 1px;
+  }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="label">每日成語</div>
+  <div class="word" id="cy-word"></div>
+  <div class="pinyin" id="cy-pinyin"></div>
+  <hr class="divider">
+  <div class="section-label">釋　義</div>
+  <div class="meaning" id="cy-meaning"></div>
+  <div class="section-label">例　句</div>
+  <div class="example" id="cy-example"></div>
+  <div class="date" id="cy-date"></div>
+</div>
+
+<script>
+const list = [
+  { word:"一石二鳥", pinyin:"yī shí èr niǎo", meaning:"比喻做一件事同時達到兩個目的。", example:"這項計畫既能節省經費，又能提升效率，真是<em>一石二鳥</em>。" },
+  { word:"亡羊補牢", pinyin:"wáng yáng bǔ láo", meaning:"羊跑了再去修補羊圈，比喻出了問題後及時補救，還不算太晚。", example:"雖然已經遲了些，但<em>亡羊補牢</em>，現在改正還來得及。" },
+  { word:"半途而廢", pinyin:"bàn tú ér fèi", meaning:"事情做到一半就放棄，比喻做事沒有恆心。", example:"學習任何技能都不能<em>半途而廢</em>，要堅持到底才能成功。" },
+  { word:"守株待兔", pinyin:"shǒu zhū dài tù", meaning:"比喻不知變通，只會消極等待，不去主動努力。", example:"做事不能<em>守株待兔</em>，要主動出擊才能把握機會。" },
+  { word:"畫蛇添足", pinyin:"huà shé tiān zú", meaning:"比喻多此一舉，做了多餘的事反而壞了事。", example:"文章已經很精彩，再加那句話反而是<em>畫蛇添足</em>。" },
+  { word:"鐵杵磨針", pinyin:"tiě chǔ mó zhēn", meaning:"比喻只要有恆心、肯努力，再困難的事情都能成功。", example:"只要像<em>鐵杵磨針</em>一樣堅持練習，一定能進步。" },
+  { word:"掩耳盜鈴", pinyin:"yǎn ěr dào líng", meaning:"比喻自欺欺人，以為別人不知道，其實騙不了任何人。", example:"問題擺在眼前，不肯面對就是<em>掩耳盜鈴</em>。" },
+  { word:"對牛彈琴", pinyin:"duì niú tán qín", meaning:"比喻說話或做事不看對象，徒勞無功。", example:"和不懂音樂的人談作曲，真是<em>對牛彈琴</em>。" },
+  { word:"精益求精", pinyin:"jīng yì qiú jīng", meaning:"已經很好了還要求更好，形容不斷追求進步。", example:"她對每一件作品都<em>精益求精</em>，從不輕易滿足。" },
+  { word:"三人成虎", pinyin:"sān rén chéng hǔ", meaning:"謠言重複多次，就會讓人信以為真，比喻謠言可怕。", example:"<em>三人成虎</em>，流言若不加以澄清，很快就會被當作事實。" },
+  { word:"葉公好龍", pinyin:"yè gōng hào lóng", meaning:"比喻表面上喜歡某事，實際上並非真心喜愛。", example:"他說愛讀書，卻從不翻書，真是<em>葉公好龍</em>。" },
+  { word:"杯弓蛇影", pinyin:"bēi gōng shé yǐng", meaning:"比喻因誤解而產生的恐懼，疑心生暗鬼。", example:"其實什麼事都沒有，你這樣擔心，不過是<em>杯弓蛇影</em>罷了。" },
+  { word:"馬到成功", pinyin:"mǎ dào chéng gōng", meaning:"形容事情順利，一開始就取得成功，常用於祝賀。", example:"祝你此次比賽<em>馬到成功</em>，奪得佳績！" },
+  { word:"囫圇吞棗", pinyin:"hú lún tūn zǎo", meaning:"比喻讀書不加思考，不求甚解，只求表面。", example:"讀書要仔細思考，不能<em>囫圇吞棗</em>，否則毫無收穫。" },
+  { word:"螳臂擋車", pinyin:"táng bì dǎng chē", meaning:"比喻不自量力，以小敵大，必敗無疑。", example:"以一人之力對抗整個組織，無異於<em>螳臂擋車</em>。" },
+  { word:"班門弄斧", pinyin:"bān mén nòng fǔ", meaning:"在行家面前賣弄自己的技藝，比喻不自量力。", example:"在大師面前談藝術，真是<em>班門弄斧</em>，令人臉紅。" },
+  { word:"水滴石穿", pinyin:"shuǐ dī shí chuān", meaning:"比喻持之以恆，不斷努力，就能克服困難達到目標。", example:"只要每天練習，<em>水滴石穿</em>，終究會有所成就。" },
+  { word:"開門見山", pinyin:"kāi mén jiàn shān", meaning:"比喻說話或寫文章直接切入重點，不繞彎子。", example:"他說話總是<em>開門見山</em>，讓人一聽就懂。" },
+  { word:"朝三暮四", pinyin:"zhāo sān mù sì", meaning:"比喻人反覆無常，沒有定性。", example:"做事要有計畫，不能<em>朝三暮四</em>，今天做這個，明天換那個。" },
+  { word:"狐假虎威", pinyin:"hú jiǎ hǔ wēi", meaning:"比喻仗著有力的人或勢力來欺壓他人。", example:"他不過是<em>狐假虎威</em>，借助上司的名義嚇人罷了。" },
+  { word:"聞雞起舞", pinyin:"wén jī qǐ wǔ", meaning:"比喻有志之士及時奮發，勤奮努力。", example:"為了準備考試，他每天<em>聞雞起舞</em>，比同學早兩小時起床讀書。" },
+  { word:"刻舟求劍", pinyin:"kè zhōu qiú jiàn", meaning:"比喻拘泥成規，不知變通，做法與實際情況脫節。", example:"時代在變，若還用舊方法，不就是<em>刻舟求劍</em>嗎？" },
+  { word:"一鳴驚人", pinyin:"yī míng jīng rén", meaning:"比喻平時默默無聞，突然有了非凡的成就，讓人驚嘆。", example:"他平常不顯山露水，這次比賽卻<em>一鳴驚人</em>，獲得冠軍。" },
+  { word:"四面楚歌", pinyin:"sì miàn chǔ gē", meaning:"形容身陷重重包圍或困境，孤立無援。", example:"公司債務纏身，業績下滑，如今真是<em>四面楚歌</em>。" },
+  { word:"紙上談兵", pinyin:"zhǐ shàng tán bīng", meaning:"比喻空談理論，沒有實際經驗，無法解決真正的問題。", example:"光看書學游泳，終究是<em>紙上談兵</em>，還是得下水練習。" },
+  { word:"濫竽充數", pinyin:"làn yú chōng shù", meaning:"比喻沒有真才實學卻混在其中，以充人數。", example:"他其實根本不懂程式，只是<em>濫竽充數</em>，混進了開發團隊。" },
+  { word:"名落孫山", pinyin:"míng luò sūn shān", meaning:"指考試或競試未能錄取，落榜。", example:"這次升學考試，他遺憾地<em>名落孫山</em>，決定重新準備明年再考。" },
+  { word:"異想天開", pinyin:"yì xiǎng tiān kāi", meaning:"比喻想法離奇，脫離實際。", example:"在沒有基礎設施的情況下說要即刻登月，真是<em>異想天開</em>。" },
+  { word:"拋磚引玉", pinyin:"pāo zhuān yǐn yù", meaning:"比喻先說出粗淺的想法，以引發別人提出更好的意見。", example:"我先<em>拋磚引玉</em>，提個初步方向，大家再來補充討論。" },
+  { word:"溫故知新", pinyin:"wēn gù zhī xīn", meaning:"溫習學過的知識，而能從中獲得新的體會與領悟。", example:"每天花時間<em>溫故知新</em>，是進步最快的學習方法。" },
+  { word:"勤能補拙", pinyin:"qín néng bǔ zhuō", meaning:"勤奮努力可以彌補天資的不足。", example:"他雖然資質普通，但靠著<em>勤能補拙</em>，成績一直名列前茅。" },
+  { word:"見賢思齊", pinyin:"jiàn xián sī qí", meaning:"看到有才德的人，就想向他看齊、學習。", example:"我們應該<em>見賢思齊</em>，向優秀的同學學習。" },
+  { word:"有備無患", pinyin:"yǒu bèi wú huàn", meaning:"事先有準備，就可以避免災禍，強調預防的重要。", example:"出門旅行前要先查好天氣，<em>有備無患</em>才不會措手不及。" },
+  { word:"再接再厲", pinyin:"zài jiē zài lì", meaning:"一次又一次地繼續努力，不斷奮鬥。", example:"這次雖然沒有成功，只要<em>再接再厲</em>，下次一定能做到。" },
+  { word:"功虧一簣", pinyin:"gōng kuī yī kuì", meaning:"比喻事情快要成功時，因最後一步沒做好而功敗垂成。", example:"計畫進行得很順利，最後一步千萬不能疏忽，以免<em>功虧一簣</em>。" },
+];
+
+const now = new Date();
+const start = new Date(now.getFullYear(), 0, 0);
+const dayOfYear = Math.floor((now - start) / 86400000);
+const cy = list[dayOfYear % list.length];
+
+document.getElementById('cy-word').textContent = cy.word;
+document.getElementById('cy-pinyin').textContent = cy.pinyin;
+document.getElementById('cy-meaning').textContent = cy.meaning;
+document.getElementById('cy-example').innerHTML = cy.example;
+document.getElementById('cy-date').textContent =
+  now.getFullYear() + ' 年 ' + (now.getMonth()+1) + ' 月 ' + now.getDate() + ' 日';
+</script>
+</body>
+</html>
